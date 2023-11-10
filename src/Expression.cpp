@@ -1,6 +1,7 @@
 #include "Expression.h"
 
 #include <cmath>
+#include <stdexcept>
 
 //=============================================================================
 // Constructors and Destructors
@@ -85,7 +86,12 @@ double Expression::evaluate(std::unordered_map<std::string, Expression*>& variab
 
     switch (this->m_type) {
         case Type::SCALAR: return scalar();
-        case Type::IDENTIFIER: return variables.at(ident())->evaluate(variables);
+        case Type::IDENTIFIER:
+            try {
+                return variables.at(ident())->evaluate(variables);
+            } catch (std::out_of_range& e) {
+                throw ParseException("variable does not exist");
+            }
     }
 
     throw ParseException("invalid parse tree");
