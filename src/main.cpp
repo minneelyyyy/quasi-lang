@@ -40,6 +40,8 @@ int main(int argc, char **argv) {
         } catch (ParseException& e) {
             std::cerr << "error: runtime exception thrown: " << e.what() << std::endl;
         }
+
+        delete expr;
     }
 
     return 0;
