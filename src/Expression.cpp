@@ -115,6 +115,8 @@ Expression* Expression::parse(const std::vector<Lexicon>& lex) {
         }
         break;
         case Op::SUB: case Op::ADD: {
+            if (lex.size() < 2) throw ParseException("unary operator expected identifier or scalar");
+
             left->right = new Expression(lex[1]);
             pos_op += 1;
         }
