@@ -27,7 +27,7 @@ public:
     Expression(const Lexicon& lex);
     ~Expression();
 
-    double evaluate(std::unordered_map<std::string, Expression*>& variables) const;
+    double evaluate(std::unordered_map<std::string, double>& variables) const;
     static Expression* parse(const std::vector<Lexicon>& lex);
     int precedence() const;
 

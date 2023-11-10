@@ -7,7 +7,7 @@
 #include "Lexicon.h"
 
 int main(int argc, char **argv) {
-    std::unordered_map<std::string, Expression*> variables;
+    std::unordered_map<std::string, double> variables;
 
     for (;;) {
         std::string input;

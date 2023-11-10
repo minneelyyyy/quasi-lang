@@ -60,7 +60,7 @@ int Expression::precedence() const {
     }
 }
 
-double Expression::evaluate(std::unordered_map<std::string, Expression*>& variables) const {
+double Expression::evaluate(std::unordered_map<std::string, double>& variables) const {
     switch (op()) {
         case Op::ADD: {
             if (this->left == nullptr)
@@ -78,8 +78,9 @@ double Expression::evaluate(std::unordered_map<std::string, Expression*>& variab
         case Op::DIV: return this->left->evaluate(variables) / this->right->evaluate(variables);
         case Op::EXP: return std::pow(this->left->evaluate(variables), this->right->evaluate(variables));
         case Op::EQU: {
-            variables[this->left->ident()] = this->right;
-            return this->right->evaluate(variables);
+            double value = this->right->evaluate(variables);
+            variables[this->left->ident()] = value;
+            return value;
         }
         case Op::OPAREN: return this->left->evaluate(variables);
     }
@@ -88,7 +89,7 @@ double Expression::evaluate(std::unordered_map<std::string, Expression*>& variab
         case Type::SCALAR: return scalar();
         case Type::IDENTIFIER:
             try {
-                return variables.at(ident())->evaluate(variables);
+                return variables.at(ident());
             } catch (std::out_of_range& e) {
                 throw ParseException("variable does not exist");
             }
