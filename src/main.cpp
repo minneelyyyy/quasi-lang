@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
             tokens = Lexicon::lex(input);
         } catch (LexException& e) {
             std::cerr << "error: tokenizer exception thrown: " << e.what() << std::endl;
+            continue;
         }
 
         Expression* expr;
@@ -31,6 +32,7 @@ int main(int argc, char **argv) {
             expr = Expression::parse(tokens);
         } catch (ParseException& e) {
             std::cerr << "error: parser exception thrown: " << e.what() << std::endl;
+            continue;
         }
 
         try {
