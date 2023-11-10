@@ -47,8 +47,6 @@ static std::unordered_map<std::string, Op> operators = {
 
 static std::string operator_chars = "+-*/()=";
 
-#include <iostream>
-
 // TODO: make not bad
 static bool is_valid_number(const std::string& str) {
     bool already_hit_decimal = false;
