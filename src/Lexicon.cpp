@@ -31,23 +31,40 @@ const std::string& Lexicon::ident() const {
 }
 
 //=============================================================================
-// Getters for union members
+// Public Functions
 //=============================================================================
 
+static std::unordered_map<std::string, Op> operators = {
+    { "+", Op::ADD },
+    { "-", Op::SUB },
+    { "*", Op::MUL },
+    { "/", Op::DIV },
+    { "**", Op::EXP },
+    { "(", Op::OPAREN },
+    { ")", Op::CPAREN },
+    { "=", Op::EQU },
+};
+
+static std::string operator_chars = "+-*/()=";
+
+#include <iostream>
+
+// TODO: make not bad
+static bool is_valid_number(const std::string& str) {
+    bool already_hit_decimal = false;
+
+    if (str.front() == '.' && str.back() == '.') return false;
+
+    for (char c : str) {
+        if (c == '.')
+            if (already_hit_decimal) return false;
+            else already_hit_decimal = true;
+    }
+
+    return true;
+}
+
 std::vector<Lexicon> Lexicon::lex(const std::string& input) {
-    static std::unordered_map<std::string, Op> operators = {
-        { "+", Op::ADD },
-        { "-", Op::SUB },
-        { "*", Op::MUL },
-        { "/", Op::DIV },
-        { "**", Op::EXP },
-        { "(", Op::OPAREN },
-        { ")", Op::CPAREN },
-        { "=", Op::EQU },
-    };
-
-    static std::string operator_chars = "+-*/()=";
-
     enum Working { NONE, IDENTIFIER, OPERATOR, NUMBER } current = Working::NONE;
     std::vector<Lexicon> lexes;
     std::string buffer;
@@ -59,6 +76,9 @@ std::vector<Lexicon> Lexicon::lex(const std::string& input) {
                 lexes.push_back(Lexicon(buffer));
             break;
             case Working::NUMBER:
+                if (!is_valid_number(buffer))
+                    throw LexException("invalid number");
+
                 lexes.push_back(Lexicon(std::stod(buffer)));
             break;
             case Working::OPERATOR: lexes.push_back(Lexicon(operators.at(buffer)));
