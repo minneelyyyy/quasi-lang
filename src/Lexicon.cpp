@@ -147,6 +147,7 @@ std::vector<Lexicon> Lexicon::lex(const std::string& input) {
 
                 else if (operator_chars.find(c) != std::string::npos) {
                     pushbuffer();
+                    current = Working::OPERATOR;
                     buffer.push_back(c);
                 }
 
