@@ -335,7 +335,7 @@ int main(int argc, char **argv) {
         try {
             tokens = Lexicon::lex(input);
         } catch (LexException& e) {
-            std::cerr << e.what() << std::endl;
+            std::cerr << "error: tokenizer exception thrown: " << e.what() << std::endl;
         }
 
         Expression* expr;
@@ -343,13 +343,13 @@ int main(int argc, char **argv) {
         try {
             expr = Expression::parse(tokens);
         } catch (ParseException& e) {
-            std::cerr << e.what() << std::endl;
+            std::cerr << "error: parser exception thrown: " << e.what() << std::endl;
         }
 
         try {
             std::cout << expr->evaluate(variables) << std::endl;
         } catch (ParseException& e) {
-            std::cerr << e.what() << std::endl;
+            std::cerr << "error: runtime exception thrown: " << e.what() << std::endl;
         }
     }
 
