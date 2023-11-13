@@ -1,47 +1,52 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 #include <vector>
 #include <unordered_map>
 
-#include "Expression.h"
 #include "Lexicon.h"
+#include "Source.h"
+#include "cxxopts.hpp"
 
-int main(int argc, char **argv) {
-    std::unordered_map<std::string, double> variables;
+int main(int argc, const char **argv) {
+    cxxopts::Options options("quasi", "a computer language");
 
-    for (;;) {
-        std::string input;
+    options.add_options()
+        ("v,verbose", "verbose compiler output", cxxopts::value<bool>()->default_value("false"))
+        ;
+    
+    options.allow_unrecognised_options();
 
-        std::cout << "> ";
-        getline(std::cin, input);
+    auto result = options.parse(argc, argv);
 
-        if (input == ":q") break;
+    bool verbose;
 
-        std::vector<Lexicon> tokens;
+    if (verbose = result["verbose"].as<bool>()) {
+        std::cout << "verbose output is enabled" << std::endl;
+    }
 
-        try {
-            tokens = Lexicon::lex(input);
-        } catch (LexException& e) {
-            std::cerr << "error: tokenizer exception thrown: " << e.what() << std::endl;
-            continue;
+    for (auto& f : result.unmatched()) {
+        std::ifstream t(f);
+        std::stringstream stream;
+        stream << t.rdbuf();
+
+        if (verbose)
+            std::cout << "Compiling " << f << std::endl;
+
+        if (verbose)
+            std::cout << "tokenizing..." << std::endl;
+
+        std::vector<Lexicon> lexes = Lexicon::lex(stream.str());
+
+        if (verbose)
+            std::cout << "parsing..." << std::endl;
+
+        Source src = Source::parse(lexes);
+
+        if (verbose) {
+            std::cout << "Functions: " << std::endl;
+            std::cout << src << std::endl;
         }
-
-        Expression* expr;
-
-        try {
-            expr = Expression::parse(tokens);
-        } catch (ParseException& e) {
-            std::cerr << "error: parser exception thrown: " << e.what() << std::endl;
-            continue;
-        }
-
-        try {
-            std::cout << expr->evaluate(variables) << std::endl;
-        } catch (ParseException& e) {
-            std::cerr << "error: runtime exception thrown: " << e.what() << std::endl;
-        }
-
-        delete expr;
     }
 
     return 0;

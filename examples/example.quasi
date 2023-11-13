@@ -1,0 +1,56 @@
+
+# function definitions follow a very flexible yet simple syntax.
+# anything that can be implied, is.
+
+# this is a basic example of a function definition.
+# it makes no use of any of quasi's unique implicit syntax rules.
+fn add(x: i32, y: i32) i32 {
+    return x + y;
+}
+
+# this function could be simplified with a `then` block.
+# a `then` is simply a one statement block, still use {} for multi-statement blocks.
+fn add(x: i32, y: i32) i32 then return x + y;
+
+# this function will be looked for at link time.
+fn otherstuff() void;
+
+# this function simply calls otherstuff, it can be simplified.
+fn dostuff() void {
+    otherstuff();
+}
+
+# this is the quasi way of writing such a function.
+# you can remove the brackets if there are no arguments, and a return type of void is implicit.
+# furthermore, a function name with no brackets is implicitly a call to that function.
+fn dostuff then otherstuff;
+
+# the extern declaration for otherstuff could simply look like this.
+fn otherstuff;
+
+# the entry point of the program
+pub fn main u32 {
+    # variables are declared with `let`. type is implied from its initial value.
+    # for an integer with no indication of type, i32 is default.
+    let x = 5;
+
+    x = add(5, 6);
+
+    # a bare function is implicitly called
+    dostuff;
+
+    # if-else blocks look like this
+    if x == 11 then
+        dostuff;
+    else then
+        otherstuff;
+
+    # remember that `then` is simply a single-statement block, you can use {} for multi-statement blocks.
+    if x != 5 {
+        dostuff;
+        dostuff;
+        dostuff;
+    }
+
+    return 0;
+}

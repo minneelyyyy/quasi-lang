@@ -6,7 +6,6 @@
 #include <unordered_map>
 #include <variant>
 
-#include "common.h"
 #include "Lexicon.h"
 
 class ParseException : public std::exception {
@@ -18,6 +17,7 @@ public:
     const char *what() { return m_message; }
 };
 
+// represents any expression
 class Expression {
 public:
     Expression();
@@ -33,7 +33,7 @@ public:
 
 private:
     Expression *left = nullptr, *right = nullptr;
-    Type m_type;
+    Lexicon::Type m_type;
     std::variant<double, Op, std::string> m_scalar, m_op, m_ident;
 
 private:

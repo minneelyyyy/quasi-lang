@@ -8,18 +8,18 @@
 //=============================================================================
 
 Expression::Expression() {}
-Expression::Expression(double scalar) : m_type(Type::SCALAR), m_scalar(scalar) {}
-Expression::Expression(Op op) : m_type(Type::OPERATOR), m_op(op) {}
-Expression::Expression(const std::string& ident) : m_type(Type::IDENTIFIER), m_ident(ident) {}
+Expression::Expression(double scalar) : m_type(Lexicon::Type::SCALAR), m_scalar(scalar) {}
+Expression::Expression(Op op) : m_type(Lexicon::Type::OPERATOR), m_op(op) {}
+Expression::Expression(const std::string& ident) : m_type(Lexicon::Type::IDENTIFIER), m_ident(ident) {}
 
 Expression::Expression(const Lexicon& lex) {
     this->m_type = lex.type();
     switch (lex.type()) {
-        case Type::SCALAR: this->m_scalar = lex.scalar();
+        case Lexicon::Type::SCALAR: this->m_scalar = lex.scalar();
         break;
-        case Type::OPERATOR: this->m_op = lex.op();
+        case Lexicon::Type::OPERATOR: this->m_op = lex.op();
         break;
-        case Type::IDENTIFIER: this->m_ident = lex.ident();
+        case Lexicon::Type::IDENTIFIER: this->m_ident = lex.ident();
         break;
     }
 }
@@ -38,7 +38,7 @@ double Expression::scalar() const {
 }
 
 Op Expression::op() const {
-    return this->m_type == Type::OPERATOR ? std::get<Op>(m_op) : Op::NONE;
+    return this->m_type == Lexicon::Type::OPERATOR ? std::get<Op>(m_op) : Op::NONE;
 }
 
 const std::string& Expression::ident() const {
@@ -86,8 +86,8 @@ double Expression::evaluate(std::unordered_map<std::string, double>& variables) 
     }
 
     switch (this->m_type) {
-        case Type::SCALAR: return scalar();
-        case Type::IDENTIFIER:
+        case Lexicon::Type::SCALAR: return scalar();
+        case Lexicon::Type::IDENTIFIER:
             try {
                 return variables.at(ident());
             } catch (std::out_of_range& e) {
@@ -137,7 +137,7 @@ Expression* Expression::parse(const std::vector<Lexicon>& lex) {
 
     Expression *current = new Expression(lex[pos_op]);
 
-    if (current->m_type != Type::OPERATOR) {
+    if (current->m_type != Lexicon::Type::OPERATOR) {
         throw ParseException("expected operator");
     }
 
